@@ -4,13 +4,16 @@
   "description": "restful api",
   "main": "server.js",
   "scripts": {
+    "client": "yarn --cwd client serve",
     "start": "node server.js",
-    "server": "nodemon server.js"
+    "server": "nodemon server.js",
+    "dev": "concurrently  \"yarn --cwd client serve\" \"yarn run start\""
   },
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
+    "concurrently": "^4.1.2",
     "express": "^4.17.1",
     "gravatar": "^1.8.0",
     "jsonwebtoken": "^8.5.1",
