@@ -73,10 +73,6 @@ export default {
             const { token } = res.data;
             localStorage.setItem("eleToken", token);
             // 引入jwt_decode 解析token
-            const decoded = jwt_decode(token);
-            // token存储在Vuex中
-            this.$store.dispatch("setAuthenticated", !this.isEmpty(decoded));
-            this.$store.dispatch("setUser", decoded);
             this.$router.push("/index");
           });
         }
