@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import jwt_decode from "jwt-decode";
 export default {
   name: "login",
   data() {
@@ -71,8 +72,15 @@ export default {
           this.$axios.post("/api/users/login", this.loginUser).then(res => {
             //token
             const { token } = res.data;
+            //存储到ls
             localStorage.setItem("eleToken", token);
             // 引入jwt_decode 解析token
+            const decoded = jwt_decode(token);
+            console.log(decoded);
+            //token存储到vuex中
+            this.$store.dispatch("setAuthenticated", !this.isEmpty(decoded));
+            this.$store.dispatch("setUser", decoded);
+
             this.$router.push("/index");
           });
         }

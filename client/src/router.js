@@ -45,7 +45,6 @@ router.beforeEach((to,from,next)=>{
     next()
   }else{
     isLogin ? next() : next('/login')
-
   }
 })
 export default router
