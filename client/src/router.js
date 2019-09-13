@@ -4,10 +4,12 @@ import Index from './views/Index'
 import Register from './views/Register'
 import Login from './views/Login'
 import NotFound from './views/404'
+import Home from './views/Home'
+import InfoShow from './views/InfoShow'
 
 Vue.use(Router)
 
-const router =  new Router({
+const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [{
@@ -17,7 +19,18 @@ const router =  new Router({
     {
       path: '/index',
       name: 'index',
-      component: Index
+      component: Index,
+      children: [{
+          path: '/home',
+          name: 'Home',
+          component: Home
+        },
+        {
+          path: '/infoShow',
+          name: 'infoShow',
+          component: InfoShow
+        }
+      ]
     },
     {
       path: '/register',
@@ -39,11 +52,11 @@ const router =  new Router({
 
 
 //路由守卫
-router.beforeEach((to,from,next)=>{
-  const isLogin = localStorage.eleToken ? true :false
-  if (to.path ==="/login" ||to.path ==="/register") {
+router.beforeEach((to, from, next) => {
+  const isLogin = localStorage.eleToken ? true : false
+  if (to.path === "/login" || to.path === "/register") {
     next()
-  }else{
+  } else {
     isLogin ? next() : next('/login')
   }
 })

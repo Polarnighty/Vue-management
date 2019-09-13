@@ -4,13 +4,13 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 const types = {
-  SET_IS_AUTNENTIATED: 'SET_IS_AUTNENTIATED', // 是否认证通过
+  SET_AUTNENTIATED: 'SET_AUTNENTIATED', // 是否认证通过
   SET_USER: 'SET_USER' // 用户信息
 }
 
 const state = { // 需要维护的状态
-  isAutnenticated: false,  // 是否认证
-  user: {}   // 存储用户信息
+  isAutnenticated: false, // 是否认证
+  user: {} // 存储用户信息
 }
 
 const getters = {
@@ -20,7 +20,7 @@ const getters = {
 
 
 const mutations = {
-  [types.SET_IS_AUTNENTIATED](state, isAutnenticated) {
+  [types.SET_AUTNENTIATED](state, isAutnenticated) {
     if (isAutnenticated)
       state.isAutnenticated = isAutnenticated
     else
@@ -35,15 +35,21 @@ const mutations = {
 }
 
 const actions = {
-  setIsAutnenticated: ({
+  setAutnenticated: ({
     commit
   }, isAutnenticated) => {
-    commit(types.SET_IS_AUTNENTIATED, isAutnenticated)
+    commit(types.SET_AUTNENTIATED, isAutnenticated)
   },
   setUser: ({
     commit
   }, user) => {
     commit(types.SET_USER, user)
+  },
+  clearCurrentState: ({
+    commit
+  }) => {
+    commit(types.SET_AUTNENTIATED, false)
+    commit(types.SET_USER, null)
   }
 }
 export default new Vuex.Store({

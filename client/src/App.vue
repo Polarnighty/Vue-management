@@ -9,10 +9,10 @@ import jwt_decode from "jwt-decode";
 export default {
   name: "app",
   created() {
-    if (localStorage.token) {
-      const decoded = jwt_decode(localStorage.token);
+    if (localStorage.eleToken) {
+      const decoded = jwt_decode(localStorage.eleToken);
       //token存储到vuex中
-      this.$store.dispatch("setAuthenticated", !this.isEmpty(decoded));
+      this.$store.dispatch("setAutnenticated", !this.isEmpty(decoded));
       this.$store.dispatch("setUser", decoded);
     }
   },
