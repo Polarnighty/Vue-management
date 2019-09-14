@@ -80,7 +80,7 @@ router.post("/login", (req, res) => {
                         }
                         // jwt.sign("规则","加密名字","过期时间","箭头函数")
                         jwt.sign(rule, keys.secretOrKey, {
-                            expiresIn: 3600
+                            expiresIn: 360000
                         }, (err, token) => {
                             if (err)
                                 throw err

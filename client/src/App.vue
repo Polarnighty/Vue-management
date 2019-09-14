@@ -31,17 +31,10 @@ export default {
 
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: content-box;
-}
+html,
+body,
 #app {
   width: 100%;
   height: 100%;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
 }
 </style>

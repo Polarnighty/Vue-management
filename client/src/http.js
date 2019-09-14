@@ -3,10 +3,6 @@ import {
     Message,
     Loading
 } from 'element-ui';
-import {
-    config
-} from 'rxjs';
-import router from './router'
 
 let loading
 
@@ -31,10 +27,10 @@ axios.interceptors.request.use(config => {
     if (localStorage.eleToken) {
         //设置统一的请求头
         config.headers.Authorization = localStorage.eleToken
-            }
+    }
     return config
 }, error => {
-    return Promise.reject()
+    return Promise.reject(error)
 })
 
 //响应拦截
@@ -45,7 +41,9 @@ axios.interceptors.response.use(response => {
     endLoading()
     Message.error(error.response.data)
     //获取错误状态码
-    const { status} =error.response
+    const {
+        status
+    } = error.response
     if (status === 401) {
         Message.error('token失效,请重新登录')
         //清除token

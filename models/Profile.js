@@ -3,31 +3,31 @@ const Schema = mongoose.Schema
 
 // Create Schema
 const ProfileSchema = new Schema({
-    type:{
-        type:String,
+    type: {
+        type: String,
     },
-    describe:{
-        type:String,
+    describe: {
+        type: String,
     },
-    income:{
-        type:String,
-        required:true
+    income: {
+        type: String,
+        required: true
     },
-    expend:{
-        type:String,
-        required:true
+    expend: {
+        type: String,
+        required: true
     },
-    cash:{
-        type:String,
-        required:true
+    cash: {
+        type: String,
+        required: true
     },
-    remark:{
-        type:String,
-    },    
-    data:{
-        type:Date,
-        default:Date.now
+    remark: {
+        type: String,
+    },
+    date: {
+        type: Date,
+        default: Date.now
     },
 })
 
-module.exports = Profile = mongoose.model("profile",ProfileSchema)
+module.exports = Profile = mongoose.model("profile", ProfileSchema)
