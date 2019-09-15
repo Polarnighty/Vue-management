@@ -41,24 +41,19 @@
       <el-table-column prop="remark" label="备注" align="center" width="180"></el-table-column>
       <el-table-column align="center" label="操作" width="180">
         <template slot-scope="scope">
-          <el-button
-            type="warning"
-            icon="edit"
-            size="small"
-            @click="handleEdit(scope.$index, scope.row)"
-          >编辑</el-button>
+          <el-button type="warning" icon="edit" size="small" @click="handleEdit(scope.row)">编辑</el-button>
           <el-button
             type="danger"
             icon="delete"
             size="small"
-            @click="handleDelete(scope.$index, scope.row)"
+            @click="handleDelete(scope.row,scope.$index)"
           >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 弹出页面 -->
     <div class="test">
-      <Dialog :dialog="dialog">222</Dialog>
+      <Dialog :dialog="this.dialog" :form="this.form" @update="getProfile"></Dialog>
     </div>
   </div>
 </template>
@@ -69,13 +64,25 @@ export default {
   name: "fundlist",
   data() {
     return {
+      form: {
+        type: "",
+        describe: "",
+        income: "",
+        expend: "",
+        cash: "",
+        remark: "",
+        type: "",
+        id: ""
+      },
       tableData: [],
       search_data: {
         startTime: "",
         endTime: ""
       },
       dialog: {
-        show: false
+        show: false,
+        title: "",
+        options: "edit"
       }
     };
   },
@@ -92,21 +99,53 @@ export default {
         // this.filterTableData = res.data;
       });
     },
-    handleEdit() {},
-    handleDelete() {},
+    handleEdit(row) {
+      (this.dialog = {
+        show: true,
+        title: "修改资金信息",
+        options: "edit"
+      }),
+        console.log(row)(
+          (this.form = {
+            type: row.type,
+            describe: row.describe,
+            income: row.income,
+            expend: row.expend,
+            cash: row.cash,
+            remark: row.remark,
+            id: row._id
+          })
+        );
+    },
+    handleDelete(row, index) {
+      // 删除
+      console.log(row);
+      this.$axios.delete(`/api/profiles/delete/${row._id}`).then(res => {
+        this.$message("删除成功");
+        this.getProfile();
+      });
+    },
     onAddMoney() {
       // 添加
       this.dialog = {
-        show: true
+        show: true,
+        title: "添加资金信息",
+        options: "add"
+      };
+      this.form = {
+        type: "",
+        describe: "",
+        income: "",
+        expend: "",
+        cash: "",
+        remark: "",
+        type: ""
       };
     }
   }
 };
 </script>
 <style scoped>
-.test{
-  border: 1px solid red;
-}
 .container {
   display: flex;
 }

@@ -77,14 +77,12 @@ router.post(
     passport.authenticate("jwt",{session:false}),
     (req,res)=>{
         const profileFiles = {}
-
         if(req.body.type) profileFiles.type =  req.body.type
         if(req.body.describe) profileFiles.describe =  req.body.describe
         if(req.body.income) profileFiles.income =  req.body.income
         if(req.body.expend) profileFiles.expend =  req.body.expend
         if(req.body.cash) profileFiles.cash =  req.body.cash
         if(req.body.remark) profileFiles.remark =  req.body.remark
-
         Profile.findOneAndUpdate(
             {_id:req.params.id},
             {$set:profileFiles},
