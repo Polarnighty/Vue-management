@@ -1,7 +1,16 @@
 <template>
   <div class="fillcontain">
     <div class="container">
+      <!-- 筛选 -->
       <el-form :inline="true" ref="search_data" :model="search_data">
+        <el-form-item label="投标时间筛选:">
+          <el-date-picker v-model="search_data.startTime" type="datetime" placeholder="选择开始时间"></el-date-picker>--
+          <el-date-picker v-model="search_data.endTime" type="datetime" placeholder="选择结束时间"></el-date-picker>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" size="small" icon="search" @click="onScreeoutMoney()">筛选</el-button>
+        </el-form-item>
+
         <el-form-item>
           <el-button type="primary" size="small" icon="view" @click="onAddMoney()">添加</el-button>
         </el-form-item>
@@ -51,6 +60,24 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 分页 -->
+    <div class="pagination_container">
+      <el-row>
+        <el-col :span="24">
+          <div class="pagination">
+            <el-pagination
+              :page-sizes="paginations.page_sizes"
+              :page-size="paginations.page_size"
+              :layout="paginations.layout"
+              :total="paginations.total"
+              :current-page.sync="paginations.page_index"
+              @current-change="handleCurrentChange"
+              @size-change="handleSizeChange"
+            ></el-pagination>
+          </div>
+        </el-col>
+      </el-row>
+    </div>
     <!-- 弹出页面 -->
     <div class="test">
       <Dialog :dialog="this.dialog" :form="this.form" @update="getProfile"></Dialog>
@@ -64,6 +91,19 @@ export default {
   name: "fundlist",
   data() {
     return {
+      filterTableData: [],
+      search_data: {
+        startTime: "",
+        endTime: ""
+      },
+      //需要给分页组件传的信息
+      paginations: {
+        page_index: 1, // 当前位于哪页
+        total: 0, // 总数
+        page_size: 5, // 1页显示多少条
+        page_sizes: [5, 10, 15, 20], //每页显示多少条
+        layout: "total, sizes, prev, pager, next, jumper" // 翻页属性
+      },
       form: {
         type: "",
         describe: "",
@@ -74,6 +114,7 @@ export default {
         type: "",
         id: ""
       },
+      allTableData: [],
       tableData: [],
       search_data: {
         startTime: "",
@@ -94,32 +135,41 @@ export default {
     getProfile() {
       // 获取表格数据
       this.$axios("/api/profiles").then(res => {
-        this.tableData = res.data;
-        // this.allTableData = res.data;
-        // this.filterTableData = res.data;
+        this.allTableData = res.data;
+        this.filterTableData = res.data;
+        // 设置分页数据
+        this.setPaginations();
+      });
+    },
+    setPaginations() {
+      // 总页数
+      this.paginations.total = this.allTableData.length;
+      this.paginations.page_index = 1;
+      this.paginations.page_size = 5;
+      // 设置默认分页数据
+      this.tableData = this.allTableData.filter((item, index) => {
+        return index < this.paginations.page_size;
       });
     },
     handleEdit(row) {
-      (this.dialog = {
+      // 编辑
+      this.dialog = {
         show: true,
         title: "修改资金信息",
-        options: "edit"
-      }),
-        console.log(row)(
-          (this.form = {
-            type: row.type,
-            describe: row.describe,
-            income: row.income,
-            expend: row.expend,
-            cash: row.cash,
-            remark: row.remark,
-            id: row._id
-          })
-        );
+        option: "edit"
+      };
+      this.form = {
+        type: row.type,
+        describe: row.describe,
+        income: row.income,
+        expend: row.expend,
+        cash: row.cash,
+        remark: row.remark,
+        id: row._id
+      };
     },
     handleDelete(row, index) {
       // 删除
-      console.log(row);
       this.$axios.delete(`/api/profiles/delete/${row._id}`).then(res => {
         this.$message("删除成功");
         this.getProfile();
@@ -141,6 +191,49 @@ export default {
         remark: "",
         type: ""
       };
+    },
+    handleCurrentChange(page) {
+      // 当前页
+      let sortnum = this.paginations.page_size * (page - 1);
+      let table = this.allTableData.filter((item, index) => {
+        return index >= sortnum;
+      });
+
+      // 设置默认分页数据
+      this.tableData = table.filter((item, index) => {
+        if (index < this.paginations.page_size) return (index = index + page);
+      });
+    },
+    handleSizeChange(page_size) {
+      // 切换size
+      this.paginations.page_index = 1;
+      this.paginations.page_size = page_size;
+
+      this.tableData = this.allTableData.filter((item, index) => {
+        return index < page_size;
+      });
+    },
+    onScreeoutMoney() {
+      // 筛选
+      if (!this.search_data.startTime || !this.search_data.endTime) {
+        this.$message({
+          type: "warning",
+          message: "请选择时间区间"
+        });
+        return;
+      }
+
+      const stime = this.search_data.startTime.getTime();
+      const etime = this.search_data.endTime.getTime();
+      this.allTableData = this.filterTableData.filter(item => {
+        let date = new Date(item.date);
+        console.log(date);
+        let time = date.getTime();
+        console.log(time);
+        return time >= stime && time <= etime;
+      });
+      //分页
+      this.setPaginations();
     }
   }
 };
@@ -161,5 +254,11 @@ export default {
 .pagination {
   text-align: right;
   margin-top: 10px;
+}
+.pagination_container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1317px;
 }
 </style>

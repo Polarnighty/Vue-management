@@ -88,11 +88,12 @@ export default {
   },
   methods: {
     onSubmit(form) {
-      const url = this.dialog.options === "add" ? "add" : `edit/${this.form.id}`;
-      console.log(url)
+      const url =
+        this.dialog.options === "add" ? "add" : `edit/${this.form.id}`;
+      console.log(url);
       this.$refs[form].validate(valid => {
         if (valid) {
-          this.$axios.post(`/api/profiles/add`, this.form).then(res => {
+          this.$axios.post(`/api/profiles/${url}`, this.form).then(res => {
             // 操作成功
             this.$message({
               message: "数据更新成功",
