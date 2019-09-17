@@ -5,7 +5,6 @@
   "main": "server.js",
   "scripts": {
     "client": "yarn --cwd client serve",
-    "start": "node server.js",
     "server": "nodemon server.js",
     "dev": "concurrently  \"yarn --cwd client serve\" \"yarn run server\""
   },
